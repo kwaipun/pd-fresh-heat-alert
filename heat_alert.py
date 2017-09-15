@@ -1,5 +1,7 @@
 import praw
 import pypd
+import time
+
 from datetime import datetime
 from os import environ
 
@@ -11,7 +13,12 @@ subreddit = reddit.subreddit('hiphopheads')
 
 viewed = []
 
-while True:
+def clean(item):
+    diff = datetime.now() - item['timestamp']
+    if diff.days == 0:
+        return True
+
+def fetch():
     for submission in subreddit.hot(limit=25):
         if submission.title.startswith('[FRESH') and submission.id not in viewed:
             viewed.append({'title': submission.title,
@@ -26,14 +33,15 @@ while True:
                     {
                         'type': 'link',
                         'href': submission.url,
-                        'text': 'FRESH HEAT ALERT %d'.format(submission.title),
+                        'text': 'FRESH HEAT ALERT',
                     },
                             ],
             })
 
+            print (submission.title)
 
 
-            print submission.title
-    time.sleep(3600) # 1hr
-
-    #TODO: clean viewed entries
+while True:
+    fetch()
+    viewed = filter(clean, viewed)
+    time.sleep(3600)
