@@ -17,7 +17,7 @@ viewed = []
 
 def clean(item):
     diff = datetime.now() - item['timestamp']
-    if diff.days == 0:
+    if diff.days >= 1:
         return True
 
 
